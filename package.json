@@ -1,0 +1,42 @@
+{
+  "name": "grunt-reconfigure",
+  "description": "Grunt.js task to override config options in certain environments or situations.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jlindsey/grunt-reconfigure",
+  "keywords": [
+    "grunt",
+    "node",
+    "gruntplugin",
+    "configuration",
+    "config",
+    "development"
+  ],
+  "author": {
+    "name": "Josh Lindsey",
+    "email": "joshua.s.lindsey@gmail.com"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/jlindsey/grunt-reconfigure/blob/master/LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jlindsey/grunt-reconfigure.git"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.6",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-nodeunit": "~0.1.2"
+  }
+}
