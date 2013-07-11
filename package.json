@@ -29,6 +29,9 @@
   "scripts": {
     "test": "grunt"
   },
+  "dependencies": {
+    "underscore": "~1.5.1"
+  },
   "peerDependencies": {
     "grunt": "~0.4.1"
   },
