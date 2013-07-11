@@ -53,6 +53,27 @@ module.exports = function(grunt) {
           test: {
             foo: 'qux',
             baz: true
+          },
+          test2: {
+            fizz: 'boo'
+          },
+          test3: {
+            fuzz: 'fizz'
+          }
+        }
+      },
+
+      nested: {
+        another: {
+          level_3: {
+            options: {
+              josh: 'shorts',
+              reconfigureOverrides: {
+                pants: {
+                  josh: 'pants'
+                }
+              }
+            }
           }
         }
       }

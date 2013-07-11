@@ -12,7 +12,7 @@ module.exports = function(grunt) {
   grunt.registerTask('reconfigure', 'Override configuration options', function(env) {
     var _ = require('underscore');
     var updates = [];
-    
+
     var hasKeyPath = function(obj, parts) {
       if (parts.length === 0) { return true; }
       
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
         for (var key in overrides) {
           var update = { 
             key: keypath+'.options.'+key,
-            oldVal: options[key].toString(),
+            oldVal: (typeof options[key] === 'undefined') ? 'undefined' : options[key].toString(),
             newVal: overrides[key].toString()
           };
           updates.push(update);
@@ -60,10 +60,29 @@ module.exports = function(grunt) {
       updateOptions(grunt.config.data[key], env, key);
     }
 
+    var padding = 5;
+    var widths = _.reduce(updates, function(memo, update, i) {
+      if ((update.key.length + padding) > memo[0]){
+        memo[0] = (update.key.length + padding);
+      }
+      if ((update.oldVal.length + padding) > memo[1]) {
+        memo[1] = (update.oldVal.length + padding);
+      }
+      if ((update.newVal.length + padding) > memo[3]) {
+        memo[3] = (update.newVal.length + padding);
+      }
+
+      return memo;  
+    }, [0, 0, 3, 0]);
+
+    if (updates.length === 0) {
+      grunt.warn("No override options found for " + env);
+    }
+
     for (var i in updates) {
       var update = updates[i];
       var text = [update.key.magenta+':', update.oldVal.cyan, '->'.grey, update.newVal.blue];
-      grunt.log.ok(grunt.log.table([30, 15, 3, 15], text));
+      grunt.log.ok(grunt.log.table(widths, text));
     }
 
     return true;
