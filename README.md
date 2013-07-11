@@ -49,6 +49,13 @@ This task looks for a key in the `options` object in any Grunt task config calle
 
 Then running Grunt with `grunt reconfigure:dev jade` will compile your Jade templates with `pretty: true`. Any options set outside of the override object will be treated normally.
 
+## Contributing
+
+  1. Create a feature branch
+  2. Write your code
+  3. Write tests (*please*)
+  4. Open a pull requests and I'll merge it back in (and add you to the contributors)!
+
 ## License
 
 Copyright (c) 2013 Joshua Lindsey. See LICENSE for details.
