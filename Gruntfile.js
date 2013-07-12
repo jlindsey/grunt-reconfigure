@@ -13,10 +13,6 @@ module.exports = function(grunt) {
     jshint: {
       options: {
         reconfigureOverrides: {
-          dev: {
-            'laxcomma': false
-          }
-        },
         "laxcomma": true,
         "curly": true,
         "eqeqeq": true,
