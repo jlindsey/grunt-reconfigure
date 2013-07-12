@@ -56,6 +56,22 @@ Then running Grunt with `grunt reconfigure:dev jade` will compile your Jade temp
   3. Write tests (*please*)
   4. Open a pull requests and I'll merge it back in (and add you to the contributors)!
 
+## Changelog
+
+#### *v1.0.2*
+  * Fix traversal not finding all nested fields
+  * Option objects are now merged (using `_.extend()`) instead of replaced
+  * Improve test output
+
+#### *v1.0.1*
+  * Better tests
+  * Better code flow and comments
+  * Fix cleanup not always running, leaving some `reconfigureOverrides` dangling which were causing tasks to fail.
+
+
+#### *v1.0.0*
+  * Initial release
+
 ## License
 
 Copyright (c) 2013 Joshua Lindsey. See LICENSE for details.
