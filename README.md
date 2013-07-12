@@ -2,6 +2,8 @@
 
 Grunt Task to override other configuration options.
 
+[Read the annotated source!](http://jlindsey.me/grunt-reconfigure/)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
 
