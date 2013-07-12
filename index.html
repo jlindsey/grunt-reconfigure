@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>reconfigure.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>reconfigure.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <pre><code> grunt-reconfigure
+ https://github.com/jlindsey/grunt-reconfigure
+ Copyright (c) 2013 Joshua Lindsey
+ Licensed under the MIT license.</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span>;
+
+module.exports = <span class="keyword">function</span>(grunt) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2>Baseline setup</h2>
+<p>Include Underscore</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> _ = require(<span class="string">'underscore'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Include Node&#39;s util</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> util = require(<span class="string">'util'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Define an array used for storing any changed options
+for later output.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> updates = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2>Helper functions</h2>
+<p>Recursively step through the provided object and return
+whether it contains the provided keypath.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> hasKeyPath = <span class="keyword">function</span>(obj, parts) {
+    <span class="keyword">if</span> (parts.length === <span class="number">0</span>) { <span class="keyword">return</span> <span class="literal">true</span>; }
+    
+    <span class="keyword">var</span> key = parts.shift();
+
+    <span class="keyword">if</span> (!_(obj).has(key)) {
+      <span class="keyword">return</span> <span class="literal">false</span>;
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> hasKeyPath(obj[key], parts);
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Recursively step through the provided object, searching for
+an <code>options</code> object with <code>reconfigureOverrides</code> containing the
+provided <code>env</code>.
+If it finds one, it resets any keys and values found inside on
+the containing <code>options</code> object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> updateOptions = <span class="keyword">function</span>(obj, env, keypath) {
+    <span class="keyword">if</span> (!_.isObject(obj) || _.isArray(obj)) { <span class="keyword">return</span>; }
+
+    <span class="keyword">if</span> (hasKeyPath(obj, [<span class="string">'options'</span>, <span class="string">'reconfigureOverrides'</span>, env])) {
+      <span class="keyword">var</span> options = obj.options,
+          overrides = obj.options.reconfigureOverrides[env];
+
+      <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> overrides) {
+        <span class="keyword">var</span> update = { 
+          key: keypath+<span class="string">'.options.'</span>+key,
+          oldVal: (<span class="keyword">typeof</span> options[key] === <span class="string">'undefined'</span>) ? <span class="string">'undefined'</span> : util.inspect(options[key]),
+        };
+
+        <span class="keyword">if</span> (_.isObject(options[key]) &amp;&amp; _.isObject(overrides[key])) { 
+          <span class="keyword">var</span> newVal = _.extend(options[key], overrides[key]);
+          update.newVal = util.inspect(newVal);
+        } <span class="keyword">else</span> {
+          options[key] = overrides[key];
+          update.newVal = util.inspect(overrides[key]);
+        }
+
+        updates.push(update);
+      }
+    }
+    
+    <span class="keyword">for</span> (<span class="keyword">var</span> objKey <span class="keyword">in</span> obj) {
+      updateOptions(obj[objKey], env, keypath+<span class="string">'.'</span>+objKey);
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Recursively step through the provided object (the <code>grunt.config.data</code> object)
+and delete all the <code>reconfigureOverrides</code> objects. If we don&#39;t do this, many
+subsequent tasks will error due to unrecognized options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> cleanupOverrides = <span class="keyword">function</span>(obj) {
+    <span class="keyword">if</span> (!_.isObject(obj)) { <span class="keyword">return</span>; }
+    
+    <span class="keyword">if</span> (hasKeyPath(obj, [<span class="string">'options'</span>, <span class="string">'reconfigureOverrides'</span>])) {
+      <span class="keyword">delete</span> obj.options.reconfigureOverrides;
+    } <span class="keyword">else</span> {
+      <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> obj) {
+        <span class="keyword">if</span> (!_.isObject(obj[key])) { <span class="keyword">continue</span>; }
+        cleanupOverrides(obj[key]);
+      }
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h2>Task definition</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  grunt.registerTask(<span class="string">'reconfigure'</span>, <span class="string">'Override configuration options'</span>, <span class="keyword">function</span>(env) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Task can&#39;t do anything unless an <code>env</code> is provided, so
+warn the user and fail.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (arguments.length === <span class="number">0</span>) {
+      grunt.log.error(<span class="string">'Must specify an override key to use (eg. grunt reconfigure:dist)'</span>);
+      <span class="keyword">return</span> <span class="literal">false</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Loop through the keys in the config data and pass them
+to our recursive functions for processing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> grunt.config.data) {
+      updateOptions(grunt.config.data[key], env, key);
+      cleanupOverrides(grunt.config.data[key]);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Padding to add between output columns</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> padding = <span class="number">5</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>We use <code>grunt.log.table</code> to format the output lines, and that 
+needs an array of column widths. This will loop through the array
+of updates and set these widths to the longest lengths among those
+strings (plus the padding).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> widths = _.reduce(updates, <span class="keyword">function</span>(memo, update, i) {
+      <span class="keyword">if</span> ((update.key.length + padding) &gt; memo[<span class="number">0</span>]){
+        memo[<span class="number">0</span>] = (update.key.length + padding);
+      }
+      <span class="keyword">if</span> ((update.oldVal.length + padding) &gt; memo[<span class="number">1</span>]) {
+        memo[<span class="number">1</span>] = (update.oldVal.length + padding);
+      }
+      <span class="keyword">if</span> ((update.newVal.length + padding) &gt; memo[<span class="number">3</span>]) {
+        memo[<span class="number">3</span>] = (update.newVal.length + padding);
+      }
+
+      <span class="keyword">return</span> memo;  
+    }, [<span class="number">0</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>]);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Emit a warning if no options were overridden, because that&#39;s
+probably not what the user was expecting.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (updates.length === <span class="number">0</span>) {
+      grunt.warn(<span class="string">"No override options found for "</span> + env);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Output the config updates with pretty colors and formatting.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> updates) {
+      <span class="keyword">var</span> update = updates[i];
+      <span class="keyword">var</span> text = [update.key.magenta+<span class="string">':'</span>, update.oldVal.cyan, <span class="string">'-&gt;'</span>.grey, update.newVal.blue];
+      grunt.log.ok(grunt.log.table(widths, text));
+    }
+
+    <span class="keyword">return</span> <span class="literal">true</span>;
+  });
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
