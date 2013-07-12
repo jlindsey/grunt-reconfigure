@@ -12,7 +12,6 @@ module.exports = function(grunt) {
   grunt.initConfig({
     jshint: {
       options: {
-        reconfigureOverrides: {
         "laxcomma": true,
         "curly": true,
         "eqeqeq": true,
