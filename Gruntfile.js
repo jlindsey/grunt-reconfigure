@@ -63,6 +63,37 @@ module.exports = function(grunt) {
         }
       },
 
+      additional: {
+        options: {
+          shorts: 'shorts',
+          reconfigureOverrides: {
+            test: {
+              shorts: 'pants'
+            }
+          }
+        }
+      },
+
+      object_test: {
+        options: {
+          foo: {
+            bar: 'baz'
+          },
+          reconfigureOverrides: {
+            test4: {
+              foo: {
+                fizz: 'buzz'
+              }
+            },
+            test5: {
+              foo: {
+                bar: 'foo'
+              }
+            }
+          }
+        }
+      },
+
       nested: {
         another: {
           level_3: {
