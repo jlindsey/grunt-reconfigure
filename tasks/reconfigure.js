@@ -11,6 +11,8 @@ module.exports = function(grunt) {
 
   // Include Underscore
   var _ = require('underscore');
+  // Include Node's util
+  var util = require('util');
 
   // Define an array used for storing any changed options
   // for later output.
@@ -40,7 +42,7 @@ module.exports = function(grunt) {
   // If it finds one, it resets any keys and values found inside on
   // the containing `options` object.
   var updateOptions = function(obj, env, keypath) {
-    if (!_.isObject(obj)) { return; }
+    if (!_.isObject(obj) || _.isArray(obj)) { return; }
 
     if (hasKeyPath(obj, ['options', 'reconfigureOverrides', env])) {
       var options = obj.options,
@@ -49,17 +51,23 @@ module.exports = function(grunt) {
       for (var key in overrides) {
         var update = { 
           key: keypath+'.options.'+key,
-          oldVal: (typeof options[key] === 'undefined') ? 'undefined' : options[key].toString(),
-          newVal: overrides[key].toString()
+          oldVal: (typeof options[key] === 'undefined') ? 'undefined' : util.inspect(options[key]),
         };
-        updates.push(update);
 
-        options[key] = overrides[key];
+        if (_.isObject(options[key]) && _.isObject(overrides[key])) { 
+          var newVal = _.extend(options[key], overrides[key]);
+          update.newVal = util.inspect(newVal);
+        } else {
+          options[key] = overrides[key];
+          update.newVal = util.inspect(overrides[key]);
+        }
+
+        updates.push(update);
       }
-    } else {
-      for (var objKey in obj) {
-        updateOptions(obj[objKey], env, keypath+'.'+objKey);
-      }
+    }
+    
+    for (var objKey in obj) {
+      updateOptions(obj[objKey], env, keypath+'.'+objKey);
     }
   };
 
