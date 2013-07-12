@@ -1,4 +1,4 @@
-# grunt-reconfigure
+# grunt-reconfigure [![Build Status](https://travis-ci.org/jlindsey/grunt-reconfigure.png?branch=master)](https://travis-ci.org/jlindsey/grunt-reconfigure)
 
 Grunt Task to override other configuration options.
 
